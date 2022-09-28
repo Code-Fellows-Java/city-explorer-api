@@ -31,6 +31,17 @@ app.get('/weather', (req, res) => {
   res.send(weather[0].city_name + ' ' + weather[0].lat + ' ' + weather[0].lon + ' ' + weather[0].timezone + ' ');
 });
 
+app.get('/weather', (req, res) => {
+  // sends a response
+  res.send(weather[1].city_name + ' ' + weather[1].lat + ' ' + weather[1].lon + ' ' + weather[1].timezone + ' ');
+});
+
+app.get('/weather', (req, res) => {
+  // sends a response
+  res.send(weather[2].city_name + ' ' + weather[2].lat + ' ' + weather[2].lon + ' ' + weather[2].timezone + ' ');
+});
+
+
 // Catch all endpoint:
 
 app.get('*', (req, res) => {
