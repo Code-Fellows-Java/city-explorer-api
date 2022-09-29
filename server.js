@@ -32,15 +32,14 @@ class Forecast {
 }
 
 async function getWeather(request, response) {
-  const searchQuery = request.query.searchQuery;
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${request.query.searchQuery}&key=${process.env.WEATHER_API_KEY}`;
 
   try {
     const weather = await axios.get(url);
-    console.log(response);
+    console.log(weather);
     const weatherArray = weather.data.data.map(day => new Forecast(day));
-    response.status(200).send(weatherArray);
     console.log(weatherArray);
+    response.status(200).send(weatherArray);
   } catch (error) {
     console.log(error);
   }
