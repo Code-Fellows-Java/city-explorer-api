@@ -7,43 +7,48 @@
 require('dotenv').config();
 
 const express = require('express');
-
 const cors = require('cors');
+const axios = require('axios');
+
 
 const weather = require('./weather/weather.json');
 
+// Express instance 
 const app = express();
-
-
 app.use(cors());
-
-// Declare our PORT variable
 const PORT = process.env.PORT || 3001;
-
-// Listening for connection
 app.listen(PORT, () => console.log(`Listening on Port ${PORT}`));
 
 // Endpoints:
 // --------------------
 
-app.get('/weather', (req, res) => {
-  // sends a response
-  res.send(weather[0].city_name + ' ' + weather[0].lat + ' ' + weather[0].lon + ' ' + weather[0].timezone + ' ');
-});
+app.get('/weather', getWeather);
 
-app.get('/weather', (req, res) => {
-  // sends a response
-  res.send(weather[1].city_name + ' ' + weather[1].lat + ' ' + weather[1].lon + ' ' + weather[1].timezone + ' ');
-});
+class Forecast {
+  constructor(day) {
+    this.date = day.valid_date;
+    this.description = `Low of ${day.low_temp}, high of ${day.high_temp} with ${day.weather.description}`;
+  }
+}
 
-app.get('/weather', (req, res) => {
-  // sends a response
-  res.send(weather[2].city_name + ' ' + weather[2].lat + ' ' + weather[2].lon + ' ' + weather[2].timezone + ' ');
-});
+async function getWeather(request, response) {
+  const searchQuery = request.query.searchQuery;
+  const url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${request.query.searchQuery}&key=${process.env.WEATHER_API_KEY}`;
+
+  try {
+    const weather = await axios.get(url);
+    console.log(response);
+    const weatherArray = weather.data.data.map(day => new Forecast(day));
+    response.status(200).send(weatherArray);
+    console.log(weatherArray);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
-// Catch all endpoint:
 
-app.get('*', (req, res) => {
-  res.status(404).send('Page Not Found');
-});
+
+
+
+
